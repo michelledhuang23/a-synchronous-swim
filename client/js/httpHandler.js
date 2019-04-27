@@ -5,12 +5,26 @@
   //
   // TODO: build the swim command fetcher here
   //
-
+  
   /////////////////////////////////////////////////////////////////////
   // The ajax file uplaoder is provided for your convenience!
   // Note: remember to fix the URL below.
   /////////////////////////////////////////////////////////////////////
+  var makeRequest = (callback = null) => {
+    $.ajax({
+      type: 'GET',
+      url: serverUrl,
+      success: (data) => {
+        if(callback) {
+          callback(data);
+        }
+        SwimTeam.move(data);
+      }
+    });
+  };
 
+  var requestInterval = setInterval(makeRequest, 1);
+  
   const ajaxFileUplaod = (file) => {
     var formData = new FormData();
     formData.append('file', file);

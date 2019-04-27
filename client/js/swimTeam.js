@@ -1,24 +1,9 @@
 const SwimTeam = {
 
   // direction, start and max all need to match the CSS
-  serverUrl: 'http://127.0.0.1:3000',
   direction: 'left',
   coords: { top: 100, left: 100 },
   max: { top: 0, left: 0, bottom: 295, right: 240 },
-
-  moveAjax: (cmd, callback = null) => {
-    $.ajax({
-      type: 'GET',
-      data: {cmd},
-      url: SwimTeam.serverUrl,
-      success: (data) => {
-        if(callback) {
-          callback(data);
-        }
-        SwimTeam.move(data);
-      }
-    });
-  },
 
   move: (direction) => {
     if (!SwimTeam.valid(direction)) {
@@ -84,5 +69,3 @@ const SwimTeam = {
   }
 
 };
-
-module.exports = SwimTeam;
