@@ -9,7 +9,7 @@ module.exports.backgroundImageFile = path.join('.', 'background.jpg');
 ////////////////////////////////////////////////////////
 
 module.exports.router = (req, res, next = ()=>{}) => {
-  // console.log('Serving request type ' + req.method + ' for url ' + req.url);
+  console.log('Serving request type ' + req.method + ' for url ' + req.url);
   res.writeHead(200, headers);
 
   switch(req.method){
@@ -20,6 +20,25 @@ module.exports.router = (req, res, next = ()=>{}) => {
       }
       break;
     case 'POST':
+      console.log("IMAGE RECEIVED")
+      var body = '';
+
+      req.on('data', (data) => {
+        fs.readFile(req.url, (err, data) => {
+          if(err) {
+            throw err;
+          }
+          res.writeHead(200, {'Content-Type': 'image/jpeg'});
+          res.write(data);
+          res.end();
+        });
+        // body += data.toString();
+        // multipart.getFile(body)
+        // console.log(body);
+      });
+      // var test = multipart.parse(body);
+      // console.log(multipart.getFile(test));
+      // console.log(multipart.getBoundary(test));
       break;
   }
   
