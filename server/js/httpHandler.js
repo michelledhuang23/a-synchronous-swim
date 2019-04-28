@@ -12,34 +12,37 @@ module.exports.router = (req, res, next = ()=>{}) => {
   console.log('Serving request type ' + req.method + ' for url ' + req.url);
   res.writeHead(200, headers);
 
-  switch(req.method){
-    case 'GET':
+  if(req.method === 'GET' ){
+    if(req.url === '/'){
       var command = dequeue();
       if(command) {
         res.write(command);
       }
-      break;
-    case 'POST':
-      console.log("IMAGE RECEIVED")
-      var body = '';
-
-      req.on('data', (data) => {
-        fs.readFile(req.url, (err, data) => {
-          if(err) {
-            throw err;
-          }
-          res.writeHead(200, {'Content-Type': 'image/jpeg'});
-          res.write(data);
-          res.end();
-        });
-        // body += data.toString();
-        // multipart.getFile(body)
-        // console.log(body);
+    }
+    if(req.url === '/background.jpg'){
+      fs.readFile(module.exports.backgroundImageFile, (err, data) => {
+        if(err) {
+          res.writeHead(404, headers);
+        } else {
+          res.writeHead(200, headers);
+          res.write(data, 'binary');
+        }
+        res.end();
+        next();
       });
-      // var test = multipart.parse(body);
-      // console.log(multipart.getFile(test));
-      // console.log(multipart.getBoundary(test));
-      break;
+    }
+  }
+  if(req.method === 'POST' && req.url === '/background.jpg') {
+    var body = Buffer.alloc(0);
+    req.on('data', (chunk) => {
+      body = Buffer.concat([body, chunk]);
+    });
+
+    req.on('end', () => {
+      res.writeHead(201, headers);  
+      res.end();
+      next();
+    })
   }
   
   res.end();
